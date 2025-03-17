@@ -17,7 +17,7 @@ Models trained based on simulation and in vivo data are available at 'checkpoint
 ## Testing
 python test.py
 
-The 'data_dir' of config is the data path, and 'save_dir' is the pre-trained model loading path
+The 'data_dir' of config is the data path, 'save_dir' is the pre-trained model loading path, and 'results_dir' is the test results save path.
 
 ## References
 [1] He K, Zhang X, Ren S, et al. Deep residual learning for image recognition[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. 2016: 770-778.
