@@ -2,7 +2,7 @@
 This project is based on Python 3.6.0 and Pytorch 1.8.0
 
 ## data
-Due to upload limitations, we only provide some simulated and in vivo data for training and testing (each containing 100 spectra). Please refer to "data/".
+Due to upload limitations, we only provide some simulated and in vivo data for training and testing (each containing 100 spectra). Please refer to 'data/'.
 
 Each h5 file contains data_rm (spectrum without phase correction, including real and imaginary parts), gt_real (manually phase-corrected spectrum), gt_phase (manually phase-corrected phase)
 
