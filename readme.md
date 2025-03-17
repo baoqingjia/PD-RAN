@@ -1,34 +1,25 @@
-# how to run the code?
+## Requirement
+This project is based on Python 3.6.0 and Pytorch 1.8.0
 
-## run python script
+## data
+Due to upload limitations, we only provide some simulated and in vivo data for training and testing (each containing 100 spectra). Please refer to "data/".
 
-all you need is `resnet_attention.ipynb`
+Each h5 file contains data_rm (spectrum without phase correction, including real and imaginary parts), gt_real (manually phase-corrected spectrum), gt_phase (manually phase-corrected phase)
 
-## about the data
-```bash
-(base) ➜  data git:(main) ✗ tree
-.
-├── X.npy
-├── Y.npy
-└── Z.npy
+## Training
+python train.py
 
-0 directories, 3 files
-```
+The 'data_dir' of config is the data path, and 'save_dir' is the pre-trained model save path
 
-where `X.npy` is the training data of shape `(batch_size, spectrum_len, value)`, `value` contains the real part and the image part, it is a degree range from 0 to 360, but there may exists some values below 0 and exceed 360. 
+## Pre-trained models
+Models trained based on simulation and in vivo data are available at 'checkpoint/'
 
-`Y.npy` is the expected value of the spectrum real part
+## Testing
+python test.py
 
-`Z.npy` is the label, which is correspond to the `value` which is in two values , namely `(ph0, ph1)`, these two are float degrees
+The 'data_dir' of config is the data path, and 'save_dir' is the pre-trained model loading path
 
-## citation about the network
+## References
+[1] He K, Zhang X, Ren S, et al. Deep residual learning for image recognition[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. 2016: 770-778.
 
-```txt
-@inproceedings{wang2017residual,
-  title={Residual attention network for image classification},
-  author={Wang, Fei and Jiang, Mengqing and Qian, Chen and Yang, Shuo and Li, Cheng and Zhang, Honggang and Wang, Xiaogang and Tang, Xiaoou},
-  booktitle={Proceedings of the IEEE conference on computer vision and pattern recognition},
-  pages={3156--3164},
-  year={2017}
-}
-```
+[2] Wang F, Jiang M, Qian C, et al. Residual attention network for image classification[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. 2017: 3156-3164.
