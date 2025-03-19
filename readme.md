@@ -21,8 +21,9 @@ The `data_dir` of config is the data path, and 'save_dir' is the pre-trained mod
 Models trained based on simulation and in vivo data are available at `checkpoint/`
 
 ## Testing
-
+```bash
 python test.py
+```
 
 The `data_dir` of config is the data path, 'save_dir' is the pre-trained model loading path, and 'results_dir' is the test results save path.
 
