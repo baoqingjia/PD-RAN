@@ -1,0 +1,5 @@
+# python3.6, maybe also work on other versions
+h5py
+torch
+numpy
+matplotlib
