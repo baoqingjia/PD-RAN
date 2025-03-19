@@ -14,7 +14,7 @@ Each h5 file contains data_rm (spectrum without phase correction, including real
 python train.py
 ```
 
-The `data_dir` of config is the data path, and 'save_dir' is the pre-trained model save path
+The `data_dir` of config is the data path, and `save_dir` is the pre-trained model save path
 
 ## Pre-trained models
 
@@ -25,7 +25,7 @@ Models trained based on simulation and in vivo data are available at `checkpoint
 python test.py
 ```
 
-The `data_dir` of config is the data path, 'save_dir' is the pre-trained model loading path, and 'results_dir' is the test results save path.
+The `data_dir` of config is the data path, `save_dir` is the pre-trained model loading path, and 'results_dir' is the test results save path.
 
 ## References
 
