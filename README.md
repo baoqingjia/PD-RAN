@@ -1,6 +1,6 @@
 ## 1. Introduction
 
-PD-RAN (Phase Model-Driven Residual Attention Network) is a deep learning-based method for automatic phase correction of Nuclear Magnetic Resonance (NMR) spectra. This project provides the implementation, training, and testing code for the PD-RAN model, as well as tools for data preparation and batch processing.
+PD-RAN (Phase Model-Driven Residual Attention Network) is a deep learning-based method for automatic phase correction of Nuclear Magnetic Resonance (NMR) spectra. This project provides the implementation, training, and testing code for the PD-RAN model, as well as tools for data conversion and batch processing.
 
 Phase correction of NMR spectra is a critical step in data processing. Traditional methods typically require manual adjustment by specialists, which is time-consuming and subjective. The PD-RAN model achieves automated and objective phase correction by learning the mapping from distorted spectra to phase parameters, making it particularly suitable for high-throughput NMR-based metabolomics research.
 
