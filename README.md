@@ -34,6 +34,7 @@ PD-RAN-main/
 │       └── plot_spectra/    # Visualization results
 ├── scripts/             # MATLAB scripts for TopSpin data processing
 │   ├── pdata2txt.m      # Convert conventional NMR formats to txt format files
+│   ├── pdata2txt_dataaug.m # Convert conventional NMR data formats into `.txt` files and train the model using phase expansion-based data augmentation to improve generalization and performance
 │   ├── phase2pdata.m    # Apply predicted phases to raw NMR data for phase correction
 ├── train.py             # Training file that takes the unphased spectrum and gt_phase as input, computes the loss between the predicted and ground truth phases, and trains the neural network
 ├── test.py              # Testing file that evaluates model performance by computing the error between the predicted and ground truth phases, given the unphased spectrum and gt_phase as input
