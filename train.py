@@ -1,3 +1,8 @@
+"""Training script for PD-RAN model
+
+Trains the PD-RAN model for NMR phase correction with early stopping.
+"""
+
 from model import PDRAN
 from utils import split_dataset, TxtDataset
 from torch.utils.data import DataLoader
@@ -6,9 +11,11 @@ import torch
 import datetime
 import os
 
+# Generate timestamp for logging and model saving
 now = datetime.datetime.now()
 current_time = now.strftime("%Y_%m_%d_%H_%M_%S")
 
+# Training configuration
 config = {
     'model_type': 'PDRAN',
     'current_time': current_time,
@@ -19,26 +26,27 @@ config = {
     'save_dir': 'checkpoint/simu/' # 'vivo' or 'simu'
 }
 
+# Create directories for logs and checkpoints
 os.makedirs('log/train/', exist_ok=True)
 os.makedirs(config['save_dir'], exist_ok=True)
 
+# Load and split dataset
 dataset = TxtDataset(root_dir=config['data_dir'])
-
 train_data, val_data = split_dataset(dataset)
 
+# Create data loaders
 train_loader = DataLoader(train_data, batch_size=config['batch_size'], shuffle=True, num_workers=8)
 val_loader = DataLoader(val_data, batch_size=config['batch_size'], shuffle=False, num_workers=8)
 
+# Initialize training components
 device = config['cuda_device']
 num_epochs = config['epoch']
-
 model = PDRAN().to(device)
-
-best_val_loss = float('inf')
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
-
 criterion = nn.MSELoss()
 
+# Early stopping parameters
+best_val_loss = float('inf')
 patience = 30
 early_stop_counter = 0
 
@@ -46,7 +54,7 @@ log_file_path = f"log/train/{config['current_time']}_{config['model_type']}_trai
 
 with open(log_file_path, "a") as log_file:
     for epoch in range(num_epochs):
-
+        # Training phase
         model.train()
         train_loss = 0
         for batch_idx, (sepc, phase, _) in enumerate(train_loader):
@@ -64,6 +72,7 @@ with open(log_file_path, "a") as log_file:
 
         avg_train_loss = train_loss / len(train_loader)
 
+        # Validation phase
         model.eval()
         val_loss = 0
         with torch.no_grad():
@@ -75,12 +84,14 @@ with open(log_file_path, "a") as log_file:
 
         avg_val_loss = val_loss / len(val_loader)
 
+        # Log training progress
         log_message = (f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {avg_train_loss:.4f}, '
                        f'Val Loss: {avg_val_loss:.4f}')
         print(log_message)
         log_file.write(log_message + "\n")
         log_file.flush()
 
+        # Save best model and early stopping logic
         if avg_val_loss < best_val_loss:
             best_val_loss = avg_val_loss
             best_model_name = f"{config['save_dir']}/{config['current_time']}_{config['model_type']}_best.pth"

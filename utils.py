@@ -1,9 +1,16 @@
+"""Utility functions and dataset classes for PD-RAN
+
+Provides data loading, preprocessing, and dataset splitting functionality
+for NMR spectroscopy data.
+"""
+
 import torch
 from torch.utils.data import Dataset, random_split
 import numpy as np
 import os
 
 def load_spectra(filepath, shape):
+    """Load complex NMR spectra from text file"""
     with open(filepath, 'r') as f:
         all_values = []
         for line in f:
@@ -16,11 +23,13 @@ def load_spectra(filepath, shape):
     return np.array(complex_values, dtype=np.complex64).reshape(shape)
 
 def load_phase(filepath, shape):
+    """Load phase parameters from text file"""
     with open(filepath, 'r') as f:
         values = list(map(float, f.readline().split()))
     return np.array(values, dtype=np.float32).reshape(shape)
 
 def split_dataset(dataset, train_ratio=0.9, val_ratio=0.1):
+    """Split dataset into training and validation sets"""
     total_size = len(dataset)
     print("total_size: ", total_size)
     train_size = int(train_ratio * total_size)
@@ -30,6 +39,7 @@ def split_dataset(dataset, train_ratio=0.9, val_ratio=0.1):
     return random_split(dataset, [train_size, val_size])
 
 class TxtDataset(Dataset):
+    """Dataset class for loading NMR spectra and phase parameters"""
     def __init__(self, root_dir, transform=None):
         self.path_spectra = os.path.join(root_dir, 'input_spectra')
         self.path_phase = os.path.join(root_dir, 'gt_phase')
@@ -44,7 +54,7 @@ class TxtDataset(Dataset):
     def __getitem__(self, idx):
         fname = self.files[idx]
 
-        # Load imag and imag part
+        # Load real and imaginary parts
         spectra = load_spectra(os.path.join(self.path_spectra, fname), (self.N,)) # 65536
 
         spectra_real = np.real(spectra)
@@ -56,7 +66,7 @@ class TxtDataset(Dataset):
         spectra = spectra.reshape(2, 256, 256)
         spectra = torch.tensor(spectra, dtype=torch.float32) # (2, 256, 256)
 
-        # Load gt_phase and convert to degrees
+        # Load ground truth phase parameters
         phase = load_phase(os.path.join(self.path_phase, fname), (2,))
         phase = torch.tensor(phase, dtype=torch.float32) # (2,)
 
@@ -64,6 +74,7 @@ class TxtDataset(Dataset):
 
 
 class TxtDataset_corrected(Dataset):
+    """Dataset class for loading spectra without phase parameters (for inference)"""
     def __init__(self, root_dir, transform=None):
         self.path_spectra = os.path.join(root_dir, 'input_spectra')
         self.path_phase = os.path.join(root_dir, 'gt_phase')
@@ -78,8 +89,8 @@ class TxtDataset_corrected(Dataset):
     def __getitem__(self, idx):
         fname = self.files[idx]
 
-        # Load imag and imag part
-        spectra = load_spectra(os.path.join(self.path_spectra, fname), (self.N,)) # 65536
+        # Load real and imaginary parts
+        spectra = load_spectra(os.path.join(self.path_spectra, fname), (self.N,))
 
         spectra_real = np.real(spectra)
         spectra_imag = np.imag(spectra)

@@ -1,3 +1,9 @@
+"""PD-RAN Model for NMR Phase Correction
+
+Implements a deep learning model based on residual attention networks
+for predicting phase correction parameters in NMR spectroscopy.
+"""
+
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -6,6 +12,7 @@ from torch.autograd import Variable
 import numpy as np
 
 class ResidualBlock(nn.Module):
+    """Residual block with bottleneck architecture"""
     def __init__(self, input_channels, output_channels, stride=1):
         super(ResidualBlock, self).__init__()
         self.input_channels = input_channels
@@ -40,6 +47,7 @@ class ResidualBlock(nn.Module):
     
 
 class AttentionModule_stage1_cifar(nn.Module):
+    """First stage attention module with two-level downsampling"""
     def __init__(self, in_channels, out_channels, size1=(16, 16), size2=(8, 8)):
         super(AttentionModule_stage1_cifar, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
@@ -102,6 +110,7 @@ class AttentionModule_stage1_cifar(nn.Module):
 
 
 class AttentionModule_stage2_cifar(nn.Module):
+    """Second stage attention module with single-level downsampling"""
     def __init__(self, in_channels, out_channels, size=(8, 8)):
         super(AttentionModule_stage2_cifar, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
@@ -146,6 +155,7 @@ class AttentionModule_stage2_cifar(nn.Module):
 
 
 class AttentionModule_stage3_cifar(nn.Module):
+    """Third stage attention module without downsampling"""
     def __init__(self, in_channels, out_channels, size=(8, 8)):
         super(AttentionModule_stage3_cifar, self).__init__()
         self.first_residual_blocks = ResidualBlock(in_channels, out_channels)
@@ -176,7 +186,7 @@ class AttentionModule_stage3_cifar(nn.Module):
         x = self.first_residual_blocks(x)
         out_trunk = self.trunk_branches(x)
         out_middle_2r_blocks = self.middle_2r_blocks(x)
-        #
+        
         out_conv1_1_blocks = self.conv1_1_blocks(out_middle_2r_blocks)
         out = (1 + out_conv1_1_blocks) * out_trunk
         out_last = self.last_blocks(out)
@@ -185,6 +195,11 @@ class AttentionModule_stage3_cifar(nn.Module):
 
 
 class PDRAN(nn.Module):
+    """PD-RAN: Phase-Driven Residual Attention Network
+    
+    Input: Complex NMR spectrum (2, 256, 256)
+    Output: Phase parameters [ph0, ph1] (2,)
+    """
     def __init__(self):
         super(PDRAN, self).__init__()
         self.conv1 = nn.Sequential(

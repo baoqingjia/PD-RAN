@@ -1,0 +1,37 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.1
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lenovo
+$$ D:/ethanol/Danhao/Danhao/data/AllEthanol/nmr/309/1/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2020-04-27 15:29:46.734 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<mvrow>,<TOPSPIN 2.1>,
+      <rser 1 from
+       309 "wangjie_20200422_3" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 16K
+       75 05 C0 D6 0E B1 C5 91 48 46 A8 E5 DB E2 E0 2F>)
+(   2,<2020-04-27 15:29:47.154 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <Start of raw data processing
+       efp BC_mod = 4 LB = 1 FT_mod = 6 PKNL = 1 PHC0 = 194.2798 PHC1 = 32.18814 SI = 32K 
+       data hash MD5: 32K
+       39 79 36 D3 06 1B A3 80 BA A3 AD 8A 4A 20 B4 BA>)
+(   3,<2020-04-27 15:30:03.744 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <pk fgphup PHC0 = 1.3 PHC1 = 0 
+       data hash MD5: 32K
+       0B F8 24 AD 4A 7C 86 3A 13 AE D4 69 7B 3A AD 6C>)
+(   4,<2020-04-27 15:30:09.929 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<dirdata>,<TOPSPIN 2.1>,
+      <wrpa from 1 1 "~TEMP" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 32K
+       0B F8 24 AD 4A 7C 86 3A 13 AE D4 69 7B 3A AD 6C>)
+(   5,<2020-04-28 14:09:06.260 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <bcm 0 0 32768 1.976335e+005 5.900180e-001 0.000000e+000 0.000000e+000 0.000000e+000 
+       data hash MD5: 32K
+       60 D2 37 C0 EB 55 D4 D2 05 24 51 AC EF E9 C4 9D>)
+$$ D:/MySync/200-Science/205-Projects/Phase Correction/20240125-PhaseCorrection _20240201_process/FIDdata_original/naojiye/3_4_5 naoqu/309/1/pdata/1/auditp.txt
+(   6,<2024-12-10T14:00:18.311+0800>,<zcwen>,<zcwen>,<cprserver>,<TopSpin 4.4.1>,
+      <changed parameter F1 PHC0 to 0>)
+(   7,<2024-12-10T14:00:18.370+0800>,<zcwen>,<zcwen>,<cprserver>,<TopSpin 4.4.1>,
+      <changed parameter F1 PHC1 to 0>)
+##END=
+
+$$ hash MD5
+$$ AC 34 CB 60 FD 0C 3D F2 0C 3E 7B 2E 00 D7 B0 B6
