@@ -24,9 +24,9 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/',        # Input test data directory
-    'save_dir': 'checkpoint/vivo/best.pth',  # Trained model weights
-    'results_dir': 'results/vivo/',       # Output results directory
+    'data_dir': 'data/vivo/test/',        # Input test data directory 'vivo' or 'simu'
+    'save_dir': 'checkpoint/vivo/best.pth',  # Trained model weights 'vivo' or 'simu'
+    'results_dir': 'results/vivo/',       # Output results directory 'vivo' or 'simu'
 }
 
 # Setup device and logging
