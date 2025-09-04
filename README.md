@@ -1,4 +1,9 @@
 ## Update on 2025/6/29
+Resolved cross-platform compatibility issues for pdata2txt and related scripts (now fully supported on both macOS and Windows).
+
+The scripts now automatically skip TopSpin hidden files during execution.
+
+## Update on 2025/6/29
 
 To further improve the model's generalization and performance, please train the model using data augmented with phase expansion.  
 For implementation details, refer to: `scripts/pdata2txt_dataaug.m`.
