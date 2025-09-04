@@ -1,4 +1,4 @@
-## Update on 2025/6/29
+## Update on 2025/9/3
 Resolved cross-platform compatibility issues for pdata2txt and related scripts (now fully supported on both macOS and Windows).
 
 The scripts now automatically skip TopSpin hidden files during execution.
