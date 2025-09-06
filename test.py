@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from model import PDRAN
-from utils import TxtDataset
+from utils import TxtDataset, phase_transform
 
 
 # Generate timestamp for logging
@@ -25,9 +25,12 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/', # 'vivo' or 'simu'
+    'data_dir': 'data/vivo/test/data_aug/', # vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
     'save_dir': 'checkpoint/vivo/best.pth', # 'vivo' or 'simu'
-    'results_dir' : 'results/vivo/', # 'vivo' or 'simu'
+    'results_dir' : 'results/vivo/data_aug/', # vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
+    # False: testing with phase-augmented data -> disable gt_phase conversion
+    # True: testing with original data -> enable gt_phase conversion
+    'enable_phase_conversion': False,       # data_ori: True, data_aug: False
 }
 
 # Initialize testing components
@@ -62,6 +65,11 @@ with open(log_file_path, "a") as log_file:
 
             # Forward pass
             output_phase = model(sepc)
+
+            # Apply phase conversion only if enabled in config
+            if config.get('enable_phase_conversion', False):
+                output_phase = phase_transform(output_phase)
+
             loss = criterion(output_phase, phase).item()
             test_loss += loss
 
@@ -85,6 +93,7 @@ with open(log_file_path, "a") as log_file:
                 # Generate phase correction array
                 N = 64 * 1024
                 out_num = np.linspace(0, 1, N)
+
                 out_phase = (out_ph0 + out_ph1 * out_num) * np.pi / 180
                 gt_phase = (gt_ph0 + gt_ph1 * out_num) * np.pi / 180
 

@@ -13,7 +13,7 @@ import torch.nn as nn
 import numpy as np
 from torch.utils.data import DataLoader
 from model import PDRAN
-from utils import TxtDataset_corrected
+from utils import TxtDataset_corrected, phase_transform
 
 # Generate timestamp for logging
 current_time = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -24,9 +24,12 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/',        # Input test data directory 'vivo' or 'simu'
-    'save_dir': 'checkpoint/vivo/best.pth',  # Trained model weights 'vivo' or 'simu'
-    'results_dir': 'results/vivo/',       # Output results directory 'vivo' or 'simu'
+    'data_dir': 'data/vivo/test/data_ori/',  # Input test data directory, vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
+    'save_dir': 'checkpoint/vivo/best.pth',  # Trained model weights, 'vivo' or 'simu'
+    'results_dir': 'results/vivo/data_ori/', # Output results directory, vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
+    # False: testing with phase-augmented data -> disable gt_phase conversion
+    # True: testing with original data -> enable gt_phase conversion
+    'enable_phase_conversion': True,        # data_ori: True, data_aug: False
 }
 
 # Setup device and logging
@@ -70,6 +73,10 @@ with open(log_file_path, "a") as log_file:
 
             # Predict phase parameters
             output_phase = model(sepc)
+
+            # Apply phase conversion only if enabled in config
+            if config.get('enable_phase_conversion', False):
+                output_phase = phase_transform(output_phase)
 
             # Convert to NumPy for processing
             output_phase = output_phase.cpu().detach().numpy()

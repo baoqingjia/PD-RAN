@@ -9,9 +9,9 @@
 clc;close all;clear;
 
 % Set input and output directories
-maindir ='data/samples/topspin_formats_data';
-savePath_spectra ='data/samples/Extracted_spectra';
-savePath_phase ='data/samples/Extracted_phase';
+maindir ='data/samples/data_aug/topspin_formats_data';
+savePath_spectra ='data/samples/data_aug/Extracted_spectra';
+savePath_phase ='data/samples/data_aug/Extracted_phase';
 
 % Create output directories
 if ~exist(savePath_spectra, 'dir')

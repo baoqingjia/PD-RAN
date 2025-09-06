@@ -1,5 +1,5 @@
 ## Update on 2025/9/3
-Resolved cross-platform compatibility issues for pdata2txt and related scripts (now fully supported on both macOS and Windows).
+Resolved cross-platform compatibility issues for **pdata2txt.m, pdata2txt_dataaug.m** and related scripts (now fully supported on both macOS and Windows).
 
 The scripts now automatically skip TopSpin hidden files during execution.
 
@@ -34,9 +34,14 @@ PD-RAN-main/
 │   │   ├── corrected_real_part/       # Corrected spectral real part data
 │   │   └── plot_spectra/    # Visualization results
 │   └── vivo/            # Real experimental data test results
-│       ├── predicted_phase/ # Predicted phase parameters
-│       ├── corrected_real_part/       # Corrected spectral real part data
-│       └── plot_spectra/    # Visualization results
+│       └── data_ori/    # Original data directory
+│           ├── predicted_phase/ # Predicted phase parameters
+│           ├── corrected_real_part/       # Corrected spectral real part data
+│           └── plot_spectra/    # Visualization results
+│       └── data_aug/    # Data augmentation directory
+│           ├── predicted_phase/ # Predicted phase parameters
+│           ├── corrected_real_part/       # Corrected spectral real part data
+│           └── plot_spectra/    # Visualization results
 ├── scripts/             # MATLAB scripts for TopSpin data processing
 │   ├── pdata2txt.m      # Convert conventional NMR formats to txt format files
 │   ├── pdata2txt_dataaug.m # Convert conventional NMR data formats into `.txt` files and train the model using phase expansion-based data augmentation to improve generalization and performance
@@ -46,7 +51,6 @@ PD-RAN-main/
 ├── corrected.py         # Correction file that takes the unphased spectrum as input and outputs the predicted correction phase and the corrected real spectrum
 ├── model.py             # Model definition
 ├── utils.py             # Utility functions
-└── requirements.txt     # Project dependencies
 ```
 
 ## 2. Environment Setup
@@ -82,7 +86,7 @@ After cloning this repository, install the required dependencies using the follo
 
 ```bash
 conda activate <your_env_name>
-pip install -r requirements.txt
+conda or pip install <package_name>
 ```
 
 Main dependencies include:
@@ -124,6 +128,8 @@ Example (`data/vivo/train/gt_phase/301_1_1.txt`):
 ### 3.2 Data Conversion
 
 Use the **'scripts/pdata2txt.m'** script to perform batch conversion of common NMR (Bruker) data formats to the required text format (.txt). The `data/samples/topspin_formats_data/` directory contains example TopSpin format data that you can use to practice the conversion process.
+
+For enhanced training, run **'scripts/pdata2txt_dataaug.m'** to convert conventional NMR data into .txt files and apply phase-expansion–based data augmentation, thereby improving the performance of the neural network.
 
 ## 4. Model Usage
 

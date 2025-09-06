@@ -1,0 +1,18 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.1
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 2	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lenovo
+$$ 2020-04-27 21:45:58.572 +0800  lenovo@LAPTOP-651OJ0PU
+$$ D:/ethanol/Danhao/Danhao/data/AllEthanol/nmr/~TEMP/1/pdata/1/used_from
+$$ process D:\topspin\bruker\prog\mod\mvrow.exe
+##$CUREXP= <ser>
+##$DU= <D:/ethanol/Danhao/Danhao>
+##$EXPNO= 524
+##$NAME= <wangjie_20200422_5>
+##$PROCNO= 1
+##$PROCNO2= 2
+##$TYPE= <nmr>
+##$USER= <AllEthanol>
+##END=

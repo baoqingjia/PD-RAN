@@ -4,9 +4,9 @@
 clc;close all;clear;
 
 % Define input and output directories
-maindir ='data/samples/topspin_formats_data';
-savePath_spectra ='data/samples/Extracted_spectra';
-savePath_phase ='data/samples/Extracted_phase';
+maindir ='data/samples/data_ori/topspin_formats_data';
+savePath_spectra ='data/samples/data_ori/Extracted_spectra';
+savePath_phase ='data/samples/data_ori/Extracted_phase';
 
 % Create output directories if they don't exist
 if ~exist(savePath_spectra, 'dir')
@@ -95,30 +95,27 @@ for i = 1:length( subdir )
     gt_ph0_ph1 = zeros(1,2);
     gt_ph0_ph1(:, 1) = PHC0_orig*(180.0/pi);         % PHC0 in degrees
     gt_ph0_ph1(:, 2) = PHC1_orig*(180.0/pi);         % PHC1 in degrees 
-    
-%     if gt_ph0_ph1(:, 1) <= 180
 
-        % Generate filename from directory structure
-        an = strsplit(fiddirpath, filesep);
-        str1 = char(an{end-1});
-        str2 = char(an{end});
-        A = [str1, '_', str2];
+    % Generate filename from directory structure
+    an = strsplit(fiddirpath, filesep);
+    str1 = char(an{end-1});
+    str2 = char(an{end});
+    A = [str1, '_', str2];
 
-        % Save complex spectrum data
-        data_real_row = real(DataBeforePhase1);
-        data_imag_row = imag(DataBeforePhase1);
-        filename = fullfile(savePath_spectra, sprintf('%s.txt', A));
-        fid = fopen(filename, 'w');
-        fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);  
-        fclose(fid);
+    % Save complex spectrum data
+    data_real_row = real(DataBeforePhase1);
+    data_imag_row = imag(DataBeforePhase1);
+    filename = fullfile(savePath_spectra, sprintf('%s.txt', A));
+    fid = fopen(filename, 'w');
+    fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);  
+    fclose(fid);
 
-        % Save phase correction parameters
-        filename = fullfile(savePath_phase, sprintf('%s.txt', A));  
-        fid = fopen(filename, 'w');
-        fprintf(fid, '%f ', gt_ph0_ph1);
-        fprintf(fid, '\n');  
-        fclose(fid);  
-%     end
+    % Save phase correction parameters
+    filename = fullfile(savePath_phase, sprintf('%s.txt', A));  
+    fid = fopen(filename, 'w');
+    fprintf(fid, '%f ', gt_ph0_ph1);
+    fprintf(fid, '\n');  
+    fclose(fid);  
 
     disp('over')
     end

@@ -1,0 +1,20 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.1
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lenovo
+$$ D:\ethanol\Danhao\Danhao/data/AllEthanol/nmr/311/1/pdata/2/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2020-04-28 14:09:55.289 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <accumulate start offset = 0 scale = 1 ppm
+       1 1 "311" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 32K
+       25 17 46 F0 59 64 0E 9B 91 1F 9A 4A B9 C5 2A 0D>)
+(   2,<2020-04-28 14:09:55.489 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <accumulate offset = -7.25233248628818e-005 scale = -1 ppm
+       1 2 "311" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 32K
+       9C 85 81 2E 1A BF 9E B1 F2 87 AB A1 03 EB E3 A8>)
+##END=
+
+$$ hash MD5
+$$ 1D 66 03 BC A4 2E 89 1C B7 E8 AC F0 E6 42 AD 60

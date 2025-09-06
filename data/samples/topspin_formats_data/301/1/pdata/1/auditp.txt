@@ -1,0 +1,32 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.1
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= lenovo
+$$ D:/ethanol/Danhao/Danhao/data/AllEthanol/nmr/301/1/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2020-04-27 15:24:02.224 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<mvrow>,<TOPSPIN 2.1>,
+      <rser 1 from
+       301 "wangjie_20200422_3" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 16K
+       07 AC FD C3 4A 25 59 70 7F 56 63 31 FE DB 01 C3>)
+(   2,<2020-04-27 15:24:02.584 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <Start of raw data processing
+       efp BC_mod = 4 LB = 1 FT_mod = 6 PKNL = 1 PHC0 = 194.2798 PHC1 = 32.18814 SI = 32K 
+       data hash MD5: 32K
+       00 C6 2A 92 06 2F 89 66 2A 49 8E B7 70 51 B2 F6>)
+(   3,<2020-04-27 15:24:16.944 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <pk fgphup PHC0 = -1.6 PHC1 = 0 
+       data hash MD5: 32K
+       23 4A 6D E9 1A D3 73 A9 A7 42 A7 9A 92 ED 9D 50>)
+(   4,<2020-04-27 15:24:23.674 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<dirdata>,<TOPSPIN 2.1>,
+      <wrpa from 1 1 "~TEMP" "AllEthanol" "D:/ethanol/Danhao/Danhao"
+       data hash MD5: 32K
+       23 4A 6D E9 1A D3 73 A9 A7 42 A7 9A 92 ED 9D 50>)
+(   5,<2020-04-28 11:51:56.580 +0800>,<lenovo>,<LAPTOP-651OJ0PU>,<proc1d>,<TOPSPIN 2.1>,
+      <bcm 0 0 32768 1.009649e+005 -7.866906e-001 0.000000e+000 0.000000e+000 0.000000e+000 
+       data hash MD5: 32K
+       D0 9D E5 7A E2 44 3B 99 AB 73 6E 4B 84 4B 94 89>)
+##END=
+
+$$ hash MD5
+$$ 57 FE F4 4A 00 E1 EA 5C 8D 15 69 A5 04 06 4C 23
