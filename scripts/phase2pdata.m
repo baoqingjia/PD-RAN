@@ -9,8 +9,8 @@ function phase2pdata()
 % Output: Updated Bruker data files with corrected phase parameters
 
 % Set input and output directories
-SampleDataDir='data/samples/topspin_formats_data';
-PredictedPhaseDir = 'results/vivo/predicted_phase';
+SampleDataDir='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data';
+PredictedPhaseDir = 'F:\cg\download\PD-RAN-main\results\vivo\data_ori\predicted_phase';
 
 % Get all phase correction files
 phaseFiles = dir(fullfile(PredictedPhaseDir, '*.txt'));
