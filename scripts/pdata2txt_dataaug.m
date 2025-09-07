@@ -9,9 +9,9 @@
 clc;close all;clear;
 
 % Set input and output directories
-maindir ='data/samples/data_aug/topspin_formats_data';
-savePath_spectra ='data/samples/data_aug/Extracted_spectra';
-savePath_phase ='data/samples/data_aug/Extracted_phase';
+maindir ='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data';
+savePath_spectra ='F:\cg\download\PD-RAN-main\data\samples\data_aug\Extracted_spectra';
+savePath_phase ='F:\cg\download\PD-RAN-main\data\samples\data_aug\Extracted_phase';
 
 % Create output directories
 if ~exist(savePath_spectra, 'dir')
@@ -40,8 +40,6 @@ for i = 1:length( subdir )
             continue;
         end
     fiddirpath = fullfile( maindir1, subdir1( k ).name);
-
-%     fiddirpath = maindir1;
 
 % Step 1: Load FID data
 fidPath = [fiddirpath,'/fid'];
@@ -77,7 +75,10 @@ t=exp(-points.*(pi*lb/swHz));
 WindowFidData=fid.*t;
 
 % Step 4: Zero padding
-ftSize = ReadTopspinParam(specPath, 'SI');
+ftSize = ReadTopspinParam(specPath, 'SI');       % Size for FFT
+if(ftSize~=64*1024)
+    ftSize=64*1024;                              % Default to 64K points
+end
 fidAddWin = [WindowFidData zeros(1,ftSize-fidSize)];
 
 % Step 5: Digital filter delay correction
@@ -95,7 +96,7 @@ x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
 PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0_orig + PHC1_orig * x));
 
 % Step 7: Data augmentation - generate random phase variations
-numbers = 140;  % Number of augmented samples per spectrum
+numbers = 2;  % Number of augmented samples per spectrum
 Ph0_expand = zeros(size(numbers));
 Ph1_expand = zeros(size(numbers));
 DataBeforePhase2 = zeros(numbers,length(DataBeforePhase1));
@@ -111,8 +112,8 @@ for inum = 1:numbers
     Ph1_expand(inum) = p2 * pi / 180;
 
     % Apply random phase error
-    DataBeforePhase2(inum,:) = PhaseDataAfterphc .* exp(1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
-    DataBeforePhase2_corr(inum,:)=DataBeforePhase2(inum, :).*exp(-1i*(Ph1_expand(inum) * x + Ph0_expand(inum)));
+    DataBeforePhase2(inum,:) = PhaseDataAfterphc .* exp(-1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
+    DataBeforePhase2_corr(inum,:)=DataBeforePhase2(inum, :).*exp(1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
     
     % Store ground truth phase values
     gt_ph0_ph1(inum, 1) = Ph0_expand(inum) * 180 / pi;

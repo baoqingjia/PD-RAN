@@ -24,12 +24,12 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/data_ori/',  # Input test data directory, vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
+    'data_dir': 'data/vivo/test/data_aug/',  # Input test data directory, vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
     'save_dir': 'checkpoint/vivo/best.pth',  # Trained model weights, 'vivo' or 'simu'
-    'results_dir': 'results/vivo/data_ori/', # Output results directory, vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
+    'results_dir': 'results/vivo/data_aug/', # Output results directory, vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
     # False: testing with phase-augmented data -> disable gt_phase conversion
     # True: testing with original data -> enable gt_phase conversion
-    'enable_phase_conversion': True,        # data_ori: True, data_aug: False
+    'enable_phase_conversion': False,        # data_ori: True, data_aug: False
 }
 
 # Setup device and logging
@@ -64,6 +64,7 @@ sepc_list = []
 phase_list = []
 output_phase_list = []
 fname_list = []
+conver_phase = 1
 
 # Process test data and apply phase correction
 with open(log_file_path, "a") as log_file:
@@ -74,12 +75,16 @@ with open(log_file_path, "a") as log_file:
             # Predict phase parameters
             output_phase = model(sepc)
 
+            output_phase_save = output_phase
+
             # Apply phase conversion only if enabled in config
             if config.get('enable_phase_conversion', False):
                 output_phase = phase_transform(output_phase)
+                conver_phase = -1
 
             # Convert to NumPy for processing
             output_phase = output_phase.cpu().detach().numpy()
+
             sepc = sepc.cpu().detach().numpy()
 
             # Apply phase correction to each spectrum
@@ -90,7 +95,7 @@ with open(log_file_path, "a") as log_file:
                 # Generate phase correction array
                 N = 64 * 1024
                 out_num = np.linspace(0, 1, N)
-                out_phase = (out_ph0 + out_ph1 * out_num) * np.pi / 180
+                out_phase = conver_phase * (out_ph0 + out_ph1 * out_num) * np.pi / 180
 
                 # Apply phase correction to complex spectrum
                 sepc_real, sepc_imag = sepc[i, 0].flatten(), sepc[i, 1].flatten()

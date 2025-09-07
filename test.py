@@ -57,6 +57,7 @@ else:
 criterion = nn.MSELoss()
 model.eval()
 test_loss = 0.0
+conver_phase = 1
 
 with open(log_file_path, "a") as log_file:
     with torch.no_grad():
@@ -69,6 +70,7 @@ with open(log_file_path, "a") as log_file:
             # Apply phase conversion only if enabled in config
             if config.get('enable_phase_conversion', False):
                 output_phase = phase_transform(output_phase)
+                conver_phase = -1
 
             loss = criterion(output_phase, phase).item()
             test_loss += loss
@@ -94,8 +96,8 @@ with open(log_file_path, "a") as log_file:
                 N = 64 * 1024
                 out_num = np.linspace(0, 1, N)
 
-                out_phase = (out_ph0 + out_ph1 * out_num) * np.pi / 180
-                gt_phase = (gt_ph0 + gt_ph1 * out_num) * np.pi / 180
+                out_phase = conver_phase * (out_ph0 + out_ph1 * out_num) * np.pi / 180
+                gt_phase = conver_phase * (gt_ph0 + gt_ph1 * out_num) * np.pi / 180
 
                 # Extract real and imaginary parts
                 sepc_real, sepc_imag = sepc[i, 0].flatten(), sepc[i, 1].flatten()
@@ -103,6 +105,7 @@ with open(log_file_path, "a") as log_file:
                 # Apply phase corrections
                 out_real = sepc_real * np.cos(out_phase) - sepc_imag * np.sin(out_phase)
                 out_imag = sepc_real * np.sin(out_phase) + sepc_imag * np.cos(out_phase)
+
                 gt_real = sepc_real * np.cos(gt_phase) - sepc_imag * np.sin(gt_phase)
 
                 fname = fnames[i]

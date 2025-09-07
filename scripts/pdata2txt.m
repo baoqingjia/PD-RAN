@@ -4,9 +4,9 @@
 clc;close all;clear;
 
 % Define input and output directories
-maindir ='data/samples/data_ori/topspin_formats_data';
-savePath_spectra ='data/samples/data_ori/Extracted_spectra';
-savePath_phase ='data/samples/data_ori/Extracted_phase';
+maindir ='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data';
+savePath_spectra ='F:\cg\download\PD-RAN-main\data\samples\data_ori\Extracted_spectra';
+savePath_phase ='F:\cg\download\PD-RAN-main\data\samples\data_ori\Extracted_phase';
 
 % Create output directories if they don't exist
 if ~exist(savePath_spectra, 'dir')
