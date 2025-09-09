@@ -20,10 +20,10 @@ config = {
     'model_type': 'PDRAN',
     'current_time': current_time,
     'epoch': 400,
-    'batch_size': 4,
+    'batch_size': 16,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/simu/train', # 'vivo' or 'simu'
-    'save_dir': 'checkpoint/simu/' # 'vivo' or 'simu'
+    'data_dir': 'data/vivo/train', # 'vivo' or 'simu'
+    'save_dir': 'checkpoint/vivo/' # 'vivo' or 'simu'
 }
 
 # Create directories for logs and checkpoints

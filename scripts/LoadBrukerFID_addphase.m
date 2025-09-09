@@ -65,8 +65,8 @@ FidData=[fidAddWin(:, ShiftNum+1:end) TempFidData];
 DataBeforePhase1 = ifftshift((ifft(FidData(1,:))));
 
 % x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
-figure(3);
-plot(real(DataBeforePhase1));
+figure(1);
+plot(real(DataBeforePhase1));title('Unphased(real part)');
 
 %% Phase correction
 DataSize = length(DataBeforePhase1);
@@ -75,14 +75,14 @@ PHC1=PHC1*(pi/180.0);
 disp(PHC0*180/pi);
 disp(PHC1*180/pi);
 a_num = ((0:DataSize-1))/(DataSize);
-PhaseDataAfterphc = DataBeforePhase1 .* exp(1i*(PHC0+PHC1*a_num));
+PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0+PHC1*a_num));
 PhaseDataAfterphc = PhaseDataAfterphc/max(abs(PhaseDataAfterphc))*65536;
-figure(4);
-plot(real(PhaseDataAfterphc));
+figure(2);
+plot(real(PhaseDataAfterphc));title('Phased(real part)');
 disp(PHC0);
 disp(PHC1);
-figure(5);
-plot(imag(PhaseDataAfterphc));
+figure(3);
+plot(imag(PhaseDataAfterphc));title('Phased(imag part)');
 
 %% Save phase-corrected data to pdata/1
 Save2Bruker(PhaseDataAfterphc,pDataDir);

@@ -9,9 +9,9 @@
 clc;close all;clear;
 
 % Set input and output directories
-maindir ='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data';
-savePath_spectra ='F:\cg\download\PD-RAN-main\data\samples\data_aug\Extracted_spectra';
-savePath_phase ='F:\cg\download\PD-RAN-main\data\samples\data_aug\Extracted_phase';
+maindir ='F:\cg\project\PD-RAN-main\data\samples\topspin_formats_data\RatplasmaCPMG';
+savePath_spectra ='F:\cg\project\PD-RAN-main\data\samples\data_aug\Extracted_spectra';
+savePath_phase ='F:\cg\project\PD-RAN-main\data\samples\data_aug\Extracted_phase';
 
 % Create output directories
 if ~exist(savePath_spectra, 'dir')
@@ -23,125 +23,140 @@ if ~exist(savePath_phase, 'dir')
 end
 
 % Process all sample directories
-subdir  = dir( maindir );
-for i = 1:length( subdir )
-    if( isequal( subdir( i ).name, '.' )||...
-        isequal( subdir( i ).name, '..')||...
-        startsWith(subdir( i ).name, '.') ||....
-        ~subdir( i ).isdir)
-        continue;
-    end
-    maindir1 = fullfile( maindir, subdir( i ).name);
-    subdir1  = dir( maindir1 );
-    for k = 1:length( subdir1 )
-        if( isequal( subdir1( k ).name, '.' )||...
-            isequal( subdir1( k ).name, '..')||...
-            ~subdir( k ).isdir)
-            continue;
+fid_list = {};
+
+% Implement recursion using a stack or queue
+dir_stack = {maindir};
+
+while ~isempty(dir_stack)
+    current_dir = dir_stack{end};
+    dir_stack(end) = [];
+
+    subdir = dir(current_dir);
+
+for i = 1:numel(subdir)
+    if subdir(i).isdir && ...
+       ~startsWith(subdir(i).name, '.') && ...
+       ~isequal(subdir(i).name, '.') && ...
+       ~isequal(subdir(i).name, '..')
+
+        this_dir = fullfile(current_dir, subdir(i).name);
+
+        % Check if this is an FID directory
+        files = dir(this_dir);
+        names = {files.name};
+        if any(strcmp(names, 'fid')) || any(strcmp(names, 'acqus'))
+            fiddirpath = this_dir;
+            fprintf('Find the FID directory: %s\n', fiddirpath);
+            fid_list{end+1} = fiddirpath;
+
+        % Step 1: Load FID data
+        fidPath = [fiddirpath,'/fid'];
+        swHz = ReadTopspinParam(fidPath, 'SW_h');
+        fidpoints = ReadTopspinParam(fidPath, 'TD');
+        SizeTD1 = 1;
+        ByteOrder = 2;
+        [fid, SizeTD2, SizeTD1] = GetFIdFromBidary(fidPath, fidpoints, SizeTD1, ByteOrder);
+
+        % Read spectral parameters
+        specPath = [fiddirpath ,'/pdata/1/1r'];
+        swppm = ReadTopspinParam(specPath, 'SW');
+        offsetppm = ReadTopspinParam(specPath, 'OFFSET');
+        lockppm = ReadTopspinParam(specPath, 'LOCKPPM');
+        swppmHalf=swppm/2;
+        IdealWater=offsetppm-swppmHalf;
+        Diff=-(IdealWater-lockppm);
+
+        % Step 2: Digital filter correction
+        DECIM = ReadTopspinParam(fidPath, 'DECIM');
+        DSPFVS = ReadTopspinParam(fidPath, 'DSPFVS');
+        DIGMOD = ReadTopspinParam(fidPath, 'DIGMOD');
+        GRPDLY = ReadTopspinParam(fidPath, 'GRPDLY');
+        NrPointsToShift = DetermineBrukerDigitalFilter(DECIM, DSPFVS, DIGMOD,GRPDLY);
+        ShiftNum =  round( NrPointsToShift );
+        ShiftResidual= NrPointsToShift-ShiftNum;
+
+        % Step 3: Apply window function
+        lb = ReadTopspinParam(specPath, 'LB');
+        fidSize=length(fid);
+        points = 0:1:(fidSize-1);
+        t=exp(-points.*(pi*lb/swHz));
+        WindowFidData=fid.*t;
+
+        % Step 4: Zero padding
+        ftSize = ReadTopspinParam(specPath, 'SI');       % Size for FFT
+        if(ftSize~=64*1024)
+            ftSize=64*1024;                              % Default to 64K points
         end
-    fiddirpath = fullfile( maindir1, subdir1( k ).name);
+        fidAddWin = [WindowFidData zeros(1,ftSize-fidSize)];
 
-% Step 1: Load FID data
-fidPath = [fiddirpath,'/fid'];
-swHz = ReadTopspinParam(fidPath, 'SW_h');
-fidpoints = ReadTopspinParam(fidPath, 'TD');
-SizeTD1 = 1;
-ByteOrder = 2;
-[fid, SizeTD2, SizeTD1] = GetFIdFromBidary(fidPath, fidpoints, SizeTD1, ByteOrder);
+        % Step 5: Digital filter delay correction
+        TempFidData=fidAddWin(:,1:ShiftNum);
+        FidData=[fidAddWin(:, ShiftNum+1:end) TempFidData];
 
-% Read spectral parameters
-specPath = [fiddirpath ,'/pdata/1/1r'];
-swppm = ReadTopspinParam(specPath, 'SW');
-offsetppm = ReadTopspinParam(specPath, 'OFFSET');
-lockppm = ReadTopspinParam(specPath, 'LOCKPPM');
-swppmHalf=swppm/2;
-IdealWater=offsetppm-swppmHalf;
-Diff=-(IdealWater-lockppm);
+        % Step 6: FFT and phase correction
+        DataBeforePhase1 = ifftshift((ifft(FidData(1,:))));
+        PHC0_orig = ReadTopspinParam(specPath, 'PHC0');
+        PHC1_orig = ReadTopspinParam(specPath, 'PHC1');
+        PHC0_orig = PHC0_orig*(pi/180.0);
+        PHC1_orig = PHC1_orig*(pi/180.0)+ShiftResidual*360*(pi/180.0);
+        x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
 
-% Step 2: Digital filter correction
-DECIM = ReadTopspinParam(fidPath, 'DECIM');
-DSPFVS = ReadTopspinParam(fidPath, 'DSPFVS');
-DIGMOD = ReadTopspinParam(fidPath, 'DIGMOD');
-GRPDLY = ReadTopspinParam(fidPath, 'GRPDLY');
-NrPointsToShift = DetermineBrukerDigitalFilter(DECIM, DSPFVS, DIGMOD,GRPDLY);
-ShiftNum =  round( NrPointsToShift );
-ShiftResidual= NrPointsToShift-ShiftNum;
+        PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0_orig + PHC1_orig * x));
 
-% Step 3: Apply window function
-lb = ReadTopspinParam(specPath, 'LB');
-fidSize=length(fid);
-points = 0:1:(fidSize-1);
-t=exp(-points.*(pi*lb/swHz));
-WindowFidData=fid.*t;
+        % Step 7: Data augmentation - generate random phase variations
+        numbers = 140;  % Number of augmented samples per spectrum
+        Ph0_expand = zeros(size(numbers));
+        Ph1_expand = zeros(size(numbers));
+        DataBeforePhase2 = zeros(numbers,length(DataBeforePhase1));
+        DataBeforePhase2_corr = zeros(numbers,length(DataBeforePhase1));
+        gt_ph0_ph1 = zeros(numbers,2);
 
-% Step 4: Zero padding
-ftSize = ReadTopspinParam(specPath, 'SI');       % Size for FFT
-if(ftSize~=64*1024)
-    ftSize=64*1024;                              % Default to 64K points
-end
-fidAddWin = [WindowFidData zeros(1,ftSize-fidSize)];
+        % Generate augmented samples with random phase errors
+        for inum = 1:numbers
+            % Generate random phase parameters
+            p1 = 0+180*rand(1,1);  % PHC0: 0-180 degrees
+            p2 = -40+80*rand(1,1); % PHC1: -40 to +40 degrees
+            Ph0_expand(inum) = p1 * pi / 180;
+            Ph1_expand(inum) = p2 * pi / 180;
 
-% Step 5: Digital filter delay correction
-TempFidData=fidAddWin(:,1:ShiftNum);
-FidData=[fidAddWin(:, ShiftNum+1:end) TempFidData];
+            % Apply random phase error
+            DataBeforePhase2(inum,:) = PhaseDataAfterphc .* exp(1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
+            DataBeforePhase2_corr(inum,:)=DataBeforePhase2(inum, :).*exp(-1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
 
-% Step 6: FFT and phase correction
-DataBeforePhase1 = ifftshift((ifft(FidData(1,:))));
-PHC0_orig = ReadTopspinParam(specPath, 'PHC0');
-PHC1_orig = ReadTopspinParam(specPath, 'PHC1');
-PHC0_orig = PHC0_orig*(pi/180.0);
-PHC1_orig = PHC1_orig*(pi/180.0)+ShiftResidual*360*(pi/180.0);
-x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
+            % Store ground truth phase values
+            gt_ph0_ph1(inum, 1) = Ph0_expand(inum) * 180 / pi;
+            gt_ph0_ph1(inum, 2) = Ph1_expand(inum) * 180 / pi;  
 
-PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0_orig + PHC1_orig * x));
+            % Generate sample name
+            an = strsplit(fiddirpath, filesep);
+            str1 = char(an{end-1});
+            str2 = char(an{end});
+%             A = [str1, '_', str2];
+            
+            A = str2;
 
-% Step 7: Data augmentation - generate random phase variations
-numbers = 2;  % Number of augmented samples per spectrum
-Ph0_expand = zeros(size(numbers));
-Ph1_expand = zeros(size(numbers));
-DataBeforePhase2 = zeros(numbers,length(DataBeforePhase1));
-DataBeforePhase2_corr = zeros(numbers,length(DataBeforePhase1));
-gt_ph0_ph1 = zeros(numbers,2);
+            % Save augmented spectrum
+            data_complex = DataBeforePhase2(inum, :);
+            data_real_row = real(data_complex);
+            data_imag_row = imag(data_complex);
+            filename = fullfile(savePath_spectra, sprintf('%s_%d.txt', A, inum));
+            fid = fopen(filename, 'w');
+            fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);
+            fclose(fid);
 
-% Generate augmented samples with random phase errors
-for inum = 1:numbers
-    % Generate random phase parameters
-    p1 = 0+180*rand(1,1);  % PHC0: 0-180 degrees
-    p2 = -40+80*rand(1,1); % PHC1: -40 to +40 degrees
-    Ph0_expand(inum) = p1 * pi / 180;
-    Ph1_expand(inum) = p2 * pi / 180;
-
-    % Apply random phase error
-    DataBeforePhase2(inum,:) = PhaseDataAfterphc .* exp(-1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
-    DataBeforePhase2_corr(inum,:)=DataBeforePhase2(inum, :).*exp(1i * (Ph1_expand(inum) * x + Ph0_expand(inum)));
-    
-    % Store ground truth phase values
-    gt_ph0_ph1(inum, 1) = Ph0_expand(inum) * 180 / pi;
-    gt_ph0_ph1(inum, 2) = Ph1_expand(inum) * 180 / pi;  
-    
-    % Generate sample name
-    an = strsplit(fiddirpath, filesep);
-    str1 = char(an{end-1});
-    str2 = char(an{end});
-    A = [str1, '_', str2];
-
-    % Save augmented spectrum
-    data_complex = DataBeforePhase2(inum, :);
-    data_real_row = real(data_complex);
-    data_imag_row = imag(data_complex);
-    filename = fullfile(savePath_spectra, sprintf('%s_%d.txt', A, inum));
-    fid = fopen(filename, 'w');
-    fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);
-    fclose(fid);
-
-    % Save corresponding phase parameters
-    data_gt_ph0_ph1 = gt_ph0_ph1(inum,:); 
-    filename = fullfile(savePath_phase, sprintf('%s_%d.txt', A, inum));  
-    fid = fopen(filename, 'w');
-    fprintf(fid, '%f ', data_gt_ph0_ph1);
-    fprintf(fid, '\n');  
-    fclose(fid);    
-end
+            % Save corresponding phase parameters
+            data_gt_ph0_ph1 = gt_ph0_ph1(inum,:); 
+            filename = fullfile(savePath_phase, sprintf('%s_%d.txt', A, inum));  
+            fid = fopen(filename, 'w');
+            fprintf(fid, '%f ', data_gt_ph0_ph1);
+            fprintf(fid, '\n');  
+            fclose(fid);    
+        end
+            else
+                dir_stack{end+1} = this_dir;
+            end
+        end
     end
-disp('Processing completed')
 end
+disp('Processing completed')

@@ -1,0 +1,55 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= leihh
+$$ C:/Bruker/TOPSPIN/data/QCT rat acute/nmr/leihehua__qct_rat_plasma_090312/12/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2009-03-12 19:49:38.484 +0100>,<haofuhua>,<EP-ZH099806>,<go>,<TOPSPIN 2.0>,
+      <created by zg
+	started at 2009-03-12 19:45:25.953 +0100,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       1C 46 23 A1 7E 82 17 F1 74 4F 72 83 3F 92 F1 01
+       data hash MD5: 32K
+       E0 1C C3 FA CE 0E 57 AD A1 35 1A 6C 83 FB E7 94>)
+(   2,<2009-06-15 08:44:50.297 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <Start of raw data processing
+       efp LB = 1 FT_mod = 6 PKNL = 1 PHC0 = 117.687 PHC1 = 41.99911 SI = 64K 
+       data hash MD5: 64K
+       95 F5 85 27 26 DE 47 6D 14 6C 5C 6F FB CB 62 CB>)
+(   3,<2009-06-15 08:46:05.531 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 6.065266e+005 5.254936e-001 1.832776e-005 1.223510e-010 -6.934305e-015 
+       data hash MD5: 64K
+       56 FF 69 84 60 52 EC 1A 76 1E B3 F6 E8 8F 41 10>)
+(   4,<2009-06-15 08:46:48.609 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 5.868688e+003 -7.835544e-001 1.605532e-005 3.805083e-010 -7.396807e-015 
+       data hash MD5: 64K
+       E7 B9 31 63 11 CC 2B E4 A8 E8 F8 AB 69 8C 13 B3>)
+(   5,<2009-06-15 08:47:05.750 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 0.000000e+000 -2.591119e-001 8.895902e-006 -7.239503e-011 0.000000e+000 
+       data hash MD5: 64K
+       DA 6D 73 CF D4 DF 54 FF 00 96 DA 59 1C 8F 15 1F>)
+(   6,<2009-06-15 08:47:31.391 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 0.000000e+000 -1.554672e-001 4.744481e-006 -6.032919e-012 -5.523303e-016 
+       data hash MD5: 64K
+       81 BD 73 59 05 86 39 82 56 20 56 7A A1 74 DE B8>)
+(   7,<2009-06-15 08:51:44.750 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <pk fgphup PHC0 = 8.918005 PHC1 = -16.8 
+       data hash MD5: 64K
+       3E 01 F0 32 F5 F0 5A AF 71 E4 C0 BD 19 1A 2F 01>)
+(   8,<2009-06-15 08:52:07.781 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 -2.443101e+005 -1.065107e+000 1.787747e-005 -7.439689e-011 1.135207e-015 
+       data hash MD5: 64K
+       45 DC 12 DA 40 42 29 14 2B 6E 32 27 0E 72 DA 8B>)
+(   9,<2009-06-15 08:52:19.484 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 1.014620e+004 -6.192749e-001 0.000000e+000 1.201551e-010 0.000000e+000 
+       data hash MD5: 64K
+       56 6B 70 CF 5C 87 3E DD 0F 1E CC F7 AE 25 D4 54>)
+(  10,<2009-06-15 08:52:31.719 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 0.000000e+000 -1.990981e-001 3.645596e-006 0.000000e+000 0.000000e+000 
+       data hash MD5: 64K
+       7E BA 1A 15 96 C2 77 EE A2 13 83 C3 E6 C1 78 69>)
+##END=
+
+$$ hash MD5
+$$ E9 8C 4B 53 D4 35 8E FD B5 2E DB C0 B2 8F 09 EF

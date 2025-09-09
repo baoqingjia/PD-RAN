@@ -9,8 +9,8 @@ function phase2pdata()
 % Output: Updated Bruker data files with corrected phase parameters
 
 % Set input and output directories
-SampleDataDir='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data';
-PredictedPhaseDir = 'F:\cg\download\PD-RAN-main\results\vivo\data_ori\predicted_phase';
+SampleDataDir='F:\cg\project\PD-RAN-main\data\samples\topspin_formats_data\RatplasmaCPMG';
+PredictedPhaseDir = 'F:\cg\project\PD-RAN-main\results\vivo\data_ori\predicted_phase';
 
 % Get all phase correction files
 phaseFiles = dir(fullfile(PredictedPhaseDir, '*.txt'));
@@ -23,10 +23,9 @@ for i = 1:length(phaseFiles)
     % Parse sample info
     parts = strsplit(fileName, '_');
     sampleName = parts{1};
-    sampleNumber = parts{2};
     
     % Build sample path
-    samplePath = fullfile(SampleDataDir, sampleName, sampleNumber); 
+    samplePath = fullfile(SampleDataDir, sampleName); 
     % Verify path exists
     if ~exist(samplePath, 'dir')
         fprintf('Warning: Sample path %s does not exist, skipping processing\n', samplePath);
@@ -38,7 +37,7 @@ for i = 1:length(phaseFiles)
     PHC0 = phaseData(1);
     PHC1 = phaseData(2);
     
-    fprintf('Processing sample %s_%s: PHC0=%f, PHC1=%f\n', sampleName, sampleNumber, PHC0, PHC1);
+    fprintf('Processing sample %s_%s: PHC0=%f, PHC1=%f\n', sampleName, PHC0, PHC1);
 
     % Apply phase correction
     LoadBrukerFID_addphase(samplePath, PHC0, PHC1);
@@ -57,9 +56,9 @@ for i = 1:length(phaseFiles)
     ShiftNum =  round( NrPointsToShift );
     ShiftResidual= NrPointsToShift-ShiftNum;
 
-    UpdateProcFile(fullfile(procNode, 'proc'), -PHC0, -PHC1-ShiftResidual*360);   
+    UpdateProcFile(fullfile(procNode, 'proc'), PHC0, PHC1+ShiftResidual*360);   
     % Update procs file
-    UpdateProcFile(fullfile(procNode, 'procs'), -PHC0, -PHC1);
+    UpdateProcFile(fullfile(procNode, 'procs'), PHC0, PHC1);
 end
 
 end

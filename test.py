@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from model import PDRAN
-from utils import TxtDataset, phase_transform
+from utils import TxtDataset
 
 
 # Generate timestamp for logging
@@ -25,12 +25,9 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/data_aug/', # vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
-    'save_dir': 'checkpoint/vivo/best.pth', # 'vivo' or 'simu'
-    'results_dir' : 'results/vivo/data_aug/', # vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
-    # False: testing with phase-augmented data -> disable gt_phase conversion
-    # True: testing with original data -> enable gt_phase conversion
-    'enable_phase_conversion': False,       # data_ori: True, data_aug: False
+    'data_dir': 'data/simu/test/', # vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
+    'save_dir': 'checkpoint/simu/best.pth', # 'vivo' or 'simu'
+    'results_dir' : 'results/simu/', # vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
 }
 
 # Initialize testing components
@@ -38,6 +35,7 @@ device = config['cuda_device']
 log_dir = Path("log/test")
 log_dir.mkdir(parents=True, exist_ok=True)
 log_file_path = log_dir / f"{config['current_time']}_{config['model_type']}_test_log.txt"
+last_dir = os.path.basename(os.path.normpath(config['results_dir']))
 
 # Load test dataset
 test_dataset = TxtDataset(root_dir=config['data_dir'])
@@ -57,7 +55,6 @@ else:
 criterion = nn.MSELoss()
 model.eval()
 test_loss = 0.0
-conver_phase = 1
 
 with open(log_file_path, "a") as log_file:
     with torch.no_grad():
@@ -66,11 +63,6 @@ with open(log_file_path, "a") as log_file:
 
             # Forward pass
             output_phase = model(sepc)
-
-            # Apply phase conversion only if enabled in config
-            if config.get('enable_phase_conversion', False):
-                output_phase = phase_transform(output_phase)
-                conver_phase = -1
 
             loss = criterion(output_phase, phase).item()
             test_loss += loss
@@ -95,18 +87,22 @@ with open(log_file_path, "a") as log_file:
                 # Generate phase correction array
                 N = 64 * 1024
                 out_num = np.linspace(0, 1, N)
-
-                out_phase = conver_phase * (out_ph0 + out_ph1 * out_num) * np.pi / 180
-                gt_phase = conver_phase * (gt_ph0 + gt_ph1 * out_num) * np.pi / 180
+                
+                out_phase = (out_ph0 + out_ph1 * out_num) * np.pi / 180
+                gt_phase = (gt_ph0 + gt_ph1 * out_num) * np.pi / 180
 
                 # Extract real and imaginary parts
                 sepc_real, sepc_imag = sepc[i, 0].flatten(), sepc[i, 1].flatten()
 
                 # Apply phase corrections
-                out_real = sepc_real * np.cos(out_phase) - sepc_imag * np.sin(out_phase)
-                out_imag = sepc_real * np.sin(out_phase) + sepc_imag * np.cos(out_phase)
-
-                gt_real = sepc_real * np.cos(gt_phase) - sepc_imag * np.sin(gt_phase)
+                if last_dir == "vivo":
+                    out_real = sepc_real * np.cos(-out_phase) - sepc_imag * np.sin(-out_phase)
+                    out_imag = sepc_real * np.sin(-out_phase) + sepc_imag * np.cos(-out_phase)
+                    gt_real = sepc_real * np.cos(-gt_phase) - sepc_imag * np.sin(-gt_phase)
+                elif last_dir == "simu":
+                    out_real = sepc_real * np.cos(out_phase) - sepc_imag * np.sin(out_phase)
+                    out_imag = sepc_real * np.sin(out_phase) + sepc_imag * np.cos(out_phase)
+                    gt_real = sepc_real * np.cos(gt_phase) - sepc_imag * np.sin(gt_phase)
 
                 fname = fnames[i]
 

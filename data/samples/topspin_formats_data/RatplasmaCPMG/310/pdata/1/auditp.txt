@@ -1,0 +1,40 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= leihh
+$$ C:/Bruker/TOPSPIN/data/QCT rat acute/nmr/leihehua__qct_rat_plasma_090312/442/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2009-03-13 13:33:52.578 +0100>,<haofuhua>,<EP-ZH099806>,<go>,<TOPSPIN 2.0>,
+      <created by zg
+	started at 2009-03-13 13:29:39.953 +0100,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       1C 46 23 A1 7E 82 17 F1 74 4F 72 83 3F 92 F1 01
+       data hash MD5: 32K
+       0F 89 29 F8 4F 83 A0 4B BD 19 89 E3 41 5C C6 75>)
+(   2,<2009-03-13 13:33:53.125 +0100>,<haofuhua>,<EP-ZH099806>,<audit>,<TOPSPIN 2.0>,
+      <user comment:
+       ICON-NMR User ID: haofuhua
+       data hash MD5: 32K
+       0F 89 29 F8 4F 83 A0 4B BD 19 89 E3 41 5C C6 75>)
+(   3,<2009-06-16 08:56:04.312 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <Start of raw data processing
+       efp LB = 1 FT_mod = 6 PKNL = 1 PHC0 = 129.9299 PHC1 = 34.69911 SI = 64K 
+       data hash MD5: 64K
+       8E 3F 31 6E F8 37 96 91 71 8D D9 C7 88 26 43 62>)
+(   4,<2009-06-16 08:57:33.859 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <pk fgphup PHC0 = -4.340387 PHC1 = -13.4 
+       data hash MD5: 64K
+       2E AE 7D 89 37 FE BB B4 28 2B 3A FD 49 8E D7 BB>)
+(   5,<2009-06-16 08:58:19.015 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 2.917495e+005 0.000000e+000 9.600229e-006 1.910711e-011 -1.749308e-015 
+       data hash MD5: 64K
+       94 F9 05 4B 55 B6 A3 E9 C9 16 2C 35 A5 66 F0 C9>)
+(   6,<2009-06-16 08:59:13.437 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 1.619428e+003 -1.976841e-001 0.000000e+000 1.610942e-010 -1.931366e-015 
+       data hash MD5: 64K
+       84 18 B7 BC BF E0 99 FB BA 92 55 B8 4A 3D E3 61>)
+##END=
+
+$$ hash MD5
+$$ 76 2D 46 3E 3F A3 2A EE 60 F8 9A 37 90 2F 3A D2

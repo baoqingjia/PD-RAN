@@ -22,13 +22,6 @@ def load_spectra(filepath, shape):
 
     return np.array(complex_values, dtype=np.complex64).reshape(shape)
 
-def phase_transform(phase: torch.Tensor) -> torch.Tensor:
-    """phase conversion"""
-    out = phase.clone()
-    out[:, 0] = (-out[:, 0] + 360) % 360
-    out[:, 1] = -out[:, 1]
-    return out
-
 def load_phase(filepath, shape):
     """Load phase parameters from text file"""
     with open(filepath, 'r') as f:
