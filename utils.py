@@ -22,6 +22,13 @@ def load_spectra(filepath, shape):
 
     return np.array(complex_values, dtype=np.complex64).reshape(shape)
 
+def get_second_dir(path: str) -> str:
+    norm_path = os.path.normpath(path)
+    parts = norm_path.split(os.sep)
+    if len(parts) >= 2:
+        return parts[1]
+    return ''
+
 def load_phase(filepath, shape):
     """Load phase parameters from text file"""
     with open(filepath, 'r') as f:
