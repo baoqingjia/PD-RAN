@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from model import PDRAN
-from utils import TxtDataset, get_second_dir
+from utils import TxtDataset
 
 
 # Generate timestamp for logging
@@ -25,9 +25,10 @@ config = {
     'current_time': current_time,
     'batch_size': 4,
     'cuda_device': torch.device("cuda:0"),
-    'data_dir': 'data/vivo/test/data_aug/', # vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
+    'data_dir': 'data/vivo/test/data_ori/', # vivo: data/vivo/test/data_aug/ or data/vivo/test/data_ori/, simu: data/simu/test/
     'save_dir': 'checkpoint/vivo/best.pth', # 'vivo' or 'simu'
-    'results_dir' : 'results/vivo/data_aug/', # vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
+    'results_dir' : 'results/vivo/data_ori/', # vivo: results/vivo/data_aug/ or results/vivo/data_ori/, simu: results/simu/
+    'experiment_name' : 'vivo', # 'vivo' or 'simu'
 }
 
 # Initialize testing components
@@ -35,7 +36,6 @@ device = config['cuda_device']
 log_dir = Path("log/test")
 log_dir.mkdir(parents=True, exist_ok=True)
 log_file_path = log_dir / f"{config['current_time']}_{config['model_type']}_test_log.txt"
-second_dir = get_second_dir(config['results_dir'])
 
 # Load test dataset
 test_dataset = TxtDataset(root_dir=config['data_dir'])
@@ -95,11 +95,11 @@ with open(log_file_path, "a") as log_file:
                 sepc_real, sepc_imag = sepc[i, 0].flatten(), sepc[i, 1].flatten()
 
                 # Apply phase corrections
-                if second_dir == "vivo":
+                if config['experiment_name'] == "vivo":
                     out_real = sepc_real * np.cos(-out_phase) - sepc_imag * np.sin(-out_phase)
                     out_imag = sepc_real * np.sin(-out_phase) + sepc_imag * np.cos(-out_phase)
                     gt_real = sepc_real * np.cos(-gt_phase) - sepc_imag * np.sin(-gt_phase)
-                elif second_dir == "simu":
+                elif config['experiment_name'] == "simu":
                     out_real = sepc_real * np.cos(out_phase) - sepc_imag * np.sin(out_phase)
                     out_imag = sepc_real * np.sin(out_phase) + sepc_imag * np.cos(out_phase)
                     gt_real = sepc_real * np.cos(gt_phase) - sepc_imag * np.sin(gt_phase)
