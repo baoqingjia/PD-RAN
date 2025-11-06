@@ -3,10 +3,10 @@
 % complex spectra and phase correction parameters to text files
 clc;close all;clear;
 
-% Define input and output directories
-maindir ='F:\cg\project\PD-RAN-main\data\samples\topspin_formats_data\RatplasmaCPMG';
-savePath_spectra ='F:\cg\project\PD-RAN-main\data\samples\data_ori\Extracted_spectra';
-savePath_phase ='F:\cg\project\PD-RAN-main\data\samples\data_ori\Extracted_phase';
+% Set input and output directories
+maindir ='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data\Metabolomics';
+savePath_spectra ='F:\cg\download\PD-RAN-main\data\samples\data_ori\input_spectra';
+savePath_phase ='F:\cg\download\PD-RAN-main\data\samples\data_ori\gt_phase';
 
 % Create output directories
 if ~exist(savePath_spectra, 'dir')
@@ -26,110 +26,149 @@ dir_stack = {maindir};
 while ~isempty(dir_stack)
     current_dir = dir_stack{end};
     dir_stack(end) = [];
-
+    
     subdir = dir(current_dir);
-
-for i = 1:length(subdir)
-    if subdir(i).isdir && ...
-       ~startsWith(subdir(i).name, '.') && ...
-       ~isequal(subdir(i).name, '.') && ...
-       ~isequal(subdir(i).name, '..')
-
-        this_dir = fullfile(current_dir, subdir(i).name);
-
-        % Check if this is an FID directory
-        files = dir(this_dir);
-        names = {files.name};
-        if any(strcmp(names, 'fid')) || any(strcmp(names, 'acqus'))
-            fiddirpath = this_dir;
-            fprintf('Find the FID directory: %s\n', fiddirpath);
-            fid_list{end+1} = fiddirpath;
-
-    %% Load FID data from binary file
-        fidPath = [fiddirpath,'/fid'];
-        swHz = ReadTopspinParam(fidPath, 'SW_h');        % Spectral width in Hz
-        fidpoints = ReadTopspinParam(fidPath, 'TD');     % Time domain points
-        SizeTD1 = 1;
-        ByteOrder = 2;
-        [fid, SizeTD2, SizeTD1] = GetFIdFromBidary(fidPath, fidpoints, SizeTD1, ByteOrder);
-
-        % Read processing parameters
-        specPath = [fiddirpath ,'/pdata/1/1r'];
-        swppm = ReadTopspinParam(specPath, 'SW');         % Spectral width in ppm
-        offsetppm = ReadTopspinParam(specPath, 'OFFSET'); % Offset in ppm
-        lockppm = ReadTopspinParam(specPath, 'LOCKPPM');  % Lock frequency
-        swppmHalf=swppm/2;
-        IdealWater=offsetppm-swppmHalf;
-        Diff=-(IdealWater-lockppm);
-    %% Calculate digital filter correction
-        % Read digital filter parameters
-        DECIM = ReadTopspinParam(fidPath, 'DECIM');
-        DSPFVS = ReadTopspinParam(fidPath, 'DSPFVS');
-        DIGMOD = ReadTopspinParam(fidPath, 'DIGMOD');
-        GRPDLY = ReadTopspinParam(fidPath, 'GRPDLY');
-        % Calculate points to shift for digital filter correction
-        NrPointsToShift = DetermineBrukerDigitalFilter(DECIM, DSPFVS, DIGMOD,GRPDLY);
-        ShiftNum =  round( NrPointsToShift );
-        ShiftResidual= NrPointsToShift-ShiftNum;
-    %% Apply exponential window function
-        lb = ReadTopspinParam(specPath, 'LB');           % Line broadening parameter
-        fidSize=length(fid);
-        points = 0:1:(fidSize-1);
-        t=exp(-points.*(pi*lb/swHz));                    % Exponential decay
-        WindowFidData=fid.*t;
-    %% Zero padding for FFT
-        ftSize = ReadTopspinParam(specPath, 'SI');       % Size for FFT
-        if(ftSize~=64*1024)
-            ftSize=64*1024;                              % Default to 64K points
+    
+    for i = 1:numel(subdir)
+        if subdir(i).isdir && ...
+                ~startsWith(subdir(i).name, '.') && ...
+                ~isequal(subdir(i).name, '.') && ...
+                ~isequal(subdir(i).name, '..')
+            
+            this_dir = fullfile(current_dir, subdir(i).name);
+            
+            % Check if this is an FID directory
+            files = dir(this_dir);
+            names = {files.name};
+            if any(strcmp(names, 'fid')) || any(strcmp(names, 'acqus'))
+                fiddirpath = this_dir;
+                fprintf('Find the FID directory: %s\n', fiddirpath);
+                fid_list{end+1} = fiddirpath;
+                
+                % Step 1: Load FID data
+                fidPath = [fiddirpath,'/fid'];
+                acquPath = [fiddirpath,'/acqus']; % NEW: Define acqus file path for reading parameters.
+                
+                swHz = ReadTopspinParam(acquPath, 'SW_h');
+                fidpoints = ReadTopspinParam(acquPath, 'TD');
+                SizeTD1 = 1;
+                
+              %% Automatically determine Byte Order from the acqus file
+                % This is the key fix to handle both old and new data formats.
+                BYTORDA_val = ReadTopspinParam(acquPath, 'BYTORDA'); % Read the byte order parameter from acqus file.
+                if (BYTORDA_val == 0)
+                    ByteOrder = 2; % Set to 2 for little-endian (modern PC-based systems).
+                    disp('BYTORDA = 0 detected. Using Little-Endian byte order.');
+                else
+                    ByteOrder = 1; % Set to 1 for big-endian (legacy workstation systems).
+                    disp('BYTORDA is not 0. Using Big-Endian byte order.');
+                end
+                
+                [fid, SizeTD2, SizeTD1] = GetFIdFromBidary(fidPath, fidpoints, SizeTD1, ByteOrder);
+                
+              %% Read spectral parameters
+              %% NEW: Dynamically find the processing number (procno)
+                pdataPath = fullfile(fiddirpath, 'pdata');
+                procno = ''; % Initialize procno as empty
+                if exist(pdataPath, 'dir')
+                    pdata_contents = dir(pdataPath);
+                    for k = 1:length(pdata_contents)
+                        % Find the first subdirectory which is a number
+                        if pdata_contents(k).isdir && ~isnan(str2double(pdata_contents(k).name))
+                            procno = pdata_contents(k).name;
+                            fprintf('Found processing directory: pdata/%s\n', procno);
+                            break; % Stop after finding the first one
+                        end
+                    end
+                end
+                
+                if isempty(procno)
+                    fprintf('ERROR: Could not find a valid processing directory inside %s. Skipping sample.\n', pdataPath);
+                    continue; % Skip to the next sample in the loop
+                end
+                
+                % Construct the correct specPath using the detected procno
+                specPath = fullfile(fiddirpath, 'pdata', procno, '1r');
+                specPath = strrep(specPath, '\', '/');
+                
+                swppm = ReadTopspinParam(specPath, 'SW');
+                offsetppm = ReadTopspinParam(specPath, 'OFFSET');
+                lockppm = ReadTopspinParam(acquPath, 'LOCKPPM');
+                swppmHalf=swppm/2;
+                IdealWater=offsetppm-swppmHalf;
+                Diff=-(IdealWater-lockppm);
+                
+                % Step 2: Digital filter correction
+                DECIM = ReadTopspinParam(acquPath, 'DECIM');
+                DSPFVS = ReadTopspinParam(acquPath, 'DSPFVS');
+                DIGMOD = ReadTopspinParam(acquPath, 'DIGMOD');
+                GRPDLY = ReadTopspinParam(acquPath, 'GRPDLY');
+                NrPointsToShift = DetermineBrukerDigitalFilter_Mod(DECIM, DSPFVS, DIGMOD,GRPDLY);
+                ShiftNum =  round( NrPointsToShift );
+                ShiftResidual= NrPointsToShift-ShiftNum;
+                
+                % Step 3: Apply window function
+                lb = ReadTopspinParam(specPath, 'LB');
+                fidSize=length(fid);
+                points = 0:1:(fidSize-1);
+                t=exp(-points.*(pi*lb/swHz));
+                WindowFidData=fid.*t;
+                
+                % Step 4: Zero padding
+                ftSize = ReadTopspinParam(specPath, 'SI');
+                if(ftSize~=64*1024)
+                    ftSize=64*1024;
+                end
+                fidAddWin = [WindowFidData zeros(1,ftSize-fidSize)];
+                
+                % Step 5: Digital filter delay correction
+                TempFidData=fidAddWin(:,1:ShiftNum);
+                FidData=[fidAddWin(:, ShiftNum+1:end) TempFidData];
+                
+                % Step 6: FFT and phase correction
+                DataBeforePhase1 = ifftshift((ifft(FidData(1,:))));
+                PHC0_orig = ReadTopspinParam(specPath, 'PHC0');
+                PHC1_orig = ReadTopspinParam(specPath, 'PHC1');
+                PHC0_orig = PHC0_orig*(pi/180.0);
+                PHC1_orig_Shift = PHC1_orig*(pi/180.0)+ShiftResidual*360*(pi/180.0);
+                
+                x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
+                PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0_orig + PHC1_orig_Shift * x));
+                
+                figure();plot(real(DataBeforePhase1), 'b');hold on;plot(real(PhaseDataAfterphc),'r');
+                
+                % Store phase correction values in degrees
+                gt_ph0_ph1 = zeros(1,2);
+                gt_ph0_ph1(:, 1) = PHC0_orig*(180.0/pi);         % PHC0 in degrees
+                gt_ph0_ph1(:, 2) = PHC1_orig_Shift*(180.0/pi);     % PHC1 in degrees
+                
+                % Generate filename from directory structure
+                an = strsplit(fiddirpath, filesep);
+                str1 = char(an{end-1});
+                str2 = char(an{end});
+%                 A = [str1, '_', str2];
+                A = str2;
+                               
+                % Save complex spectrum data
+                data_real_row = real(DataBeforePhase1);
+                data_imag_row = imag(DataBeforePhase1);
+                filename = fullfile(savePath_spectra, sprintf('%s.txt', A));
+                fid = fopen(filename, 'w');
+                fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);
+                fclose(fid);
+                
+                % Save phase correction parameters
+                filename = fullfile(savePath_phase, sprintf('%s.txt', A));
+                fid = fopen(filename, 'w');
+                fprintf(fid, '%f ', gt_ph0_ph1);
+                fprintf(fid, '\n');
+                fclose(fid);
+                
+                disp('over')
+            else
+                dir_stack{end+1} = this_dir;
+            end
         end
-        fidAddWin = [WindowFidData zeros(1,ftSize-fidSize)];
-    %% Apply digital filter point shifting
-        TempFidData=fidAddWin(:,1:ShiftNum);
-        FidData=[fidAddWin(:, ShiftNum+1:end) TempFidData];
-    %% Perform FFT and phase correction
-        DataBeforePhase1 = ifftshift((ifft(FidData(1,:))));
-        % Read phase correction parameters
-        PHC0_orig = ReadTopspinParam(specPath, 'PHC0');  % Zero-order phase
-        PHC1_orig = ReadTopspinParam(specPath, 'PHC1');  % First-order phase
-        % Convert to radians and adjust for digital filter
-        PHC0_orig = PHC0_orig*(pi/180.0);
-        PHC1_orig = PHC1_orig*(pi/180.0)+ShiftResidual*360*(pi/180.0);
-        x = ((0:length(DataBeforePhase1)-1))/length(DataBeforePhase1);
-        PhaseDataAfterphc = DataBeforePhase1 .* exp(-1i*(PHC0_orig+PHC1_orig*x));
-
-        % Store phase correction values in degrees
-        gt_ph0_ph1 = zeros(1,2);
-        gt_ph0_ph1(:, 1) = PHC0_orig*(180.0/pi);         % PHC0 in degrees
-        gt_ph0_ph1(:, 2) = PHC1_orig*(180.0/pi);         % PHC1 in degrees 
-
-        % Generate filename from directory structure
-        an = strsplit(fiddirpath, filesep);
-        str1 = char(an{end-1});
-        str2 = char(an{end});
-    %     A = [str1, '_', str2];
-
-        A = str2;
-
-        % Save complex spectrum data
-        data_real_row = real(DataBeforePhase1);
-        data_imag_row = imag(DataBeforePhase1);
-        filename = fullfile(savePath_spectra, sprintf('%s.txt', A));
-        fid = fopen(filename, 'w');
-        fprintf(fid, '%f%+fi\n', [data_real_row; data_imag_row]);  
-        fclose(fid);
-
-        % Save phase correction parameters
-        filename = fullfile(savePath_phase, sprintf('%s.txt', A));  
-        fid = fopen(filename, 'w');
-        fprintf(fid, '%f ', gt_ph0_ph1);
-        fprintf(fid, '\n');  
-        fclose(fid);  
-
-        disp('over')
-        else
-            dir_stack{end+1} = this_dir;
-        end
-    end
     end
 end
 disp('Processing completed')

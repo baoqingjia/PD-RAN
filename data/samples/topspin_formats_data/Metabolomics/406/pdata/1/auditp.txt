@@ -1,0 +1,44 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= haofuhua
+$$ D:/haofuhua/data/haofuhua/nmr/leihehua__qct_rat_plasma_090312/252/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2009-03-13 05:11:08.859 +0100>,<haofuhua>,<EP-ZH099806>,<go>,<TOPSPIN 2.0>,
+      <created by zg
+	started at 2009-03-13 05:06:56.312 +0100,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       1C 46 23 A1 7E 82 17 F1 74 4F 72 83 3F 92 F1 01
+       data hash MD5: 32K
+       4C 64 35 A4 64 B7 8C 5C 11 51 5F D3 5A B7 6D AC>)
+(   2,<2009-03-13 05:11:09.421 +0100>,<haofuhua>,<EP-ZH099806>,<audit>,<TOPSPIN 2.0>,
+      <user comment:
+       ICON-NMR User ID: haofuhua
+       data hash MD5: 32K
+       4C 64 35 A4 64 B7 8C 5C 11 51 5F D3 5A B7 6D AC>)
+(   3,<2009-03-13 12:01:48.437 +0100>,<haofuhua>,<EP-ZH099806>,<proc1d>,<TOPSPIN 2.0>,
+      <Start of raw data processing
+       efp LB = 1 FT_mod = 6 PKNL = 1 PHC0 = 129.9299 PHC1 = 34.69911 SI = 64K 
+       data hash MD5: 64K
+       C8 76 F1 AA 5A 24 1D B2 9F E8 0D 5C 59 5A 6B 49>)
+(   4,<2009-06-15 15:31:33.031 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <pk fgphup PHC0 = -15.0008 PHC1 = -0.6 
+       data hash MD5: 64K
+       96 EC D0 AF 30 78 C5 42 60 EA 83 29 EB BF 66 1B>)
+(   5,<2009-06-15 16:01:02.344 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 4.673666e+005 0.000000e+000 0.000000e+000 2.667666e-010 -3.453787e-015 
+       data hash MD5: 64K
+       29 19 07 16 34 75 A5 3B 89 2D 1F 73 2A 0F 6F C4>)
+(   6,<2009-06-15 16:01:46.172 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 0.000000e+000 0.000000e+000 -4.414852e-006 1.908683e-010 -1.798847e-015 
+       data hash MD5: 64K
+       1C 64 45 48 A8 C5 12 53 8F 56 94 C4 88 01 7E 64>)
+(   7,<2009-06-15 16:10:15.437 +0800>,<leihh>,<LEIHH>,<proc1d>,<TOPSPIN 2.0>,
+      <bcm 0 0 65536 0.000000e+000 0.000000e+000 0.000000e+000 0.000000e+000 0.000000e+000 
+       data hash MD5: 64K
+       1C 64 45 48 A8 C5 12 53 8F 56 94 C4 88 01 7E 64>)
+##END=
+
+$$ hash MD5
+$$ C3 5A 18 5D 28 DD F0 A4 55 8A D6 AE 90 4F 38 E1

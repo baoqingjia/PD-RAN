@@ -1,0 +1,23 @@
+##TITLE= Audit trail, TOPSPIN		Version 2.0
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= haofuhua
+$$ D:\haofuhua/data/haofuhua/nmr/leihehua__qct_rat_Urine_090313/208/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, PROCESS, VERSION, WHAT)
+(   1,<2009-03-28 18:24:08.312 +0100>,<haofuhua>,<EP-ZH099806>,<go>,<TOPSPIN 2.0>,
+      <created by zg
+	started at 2009-03-28 18:21:36.250 +0100,
+	POWCHK enabled, PULCHK disabled,
+       configuration hash MD5:
+       DC 87 21 63 19 40 2B FD 76 68 92 A5 CC 61 4A 9A
+       data hash MD5: 32K
+       9F D0 15 D2 C6 56 B0 2F AE 82 B1 DF 34 84 C5 6C>)
+(   2,<2009-03-28 18:24:08.890 +0100>,<haofuhua>,<EP-ZH099806>,<audit>,<TOPSPIN 2.0>,
+      <user comment:
+       ICON-NMR User ID: haofuhua
+       data hash MD5: 32K
+       9F D0 15 D2 C6 56 B0 2F AE 82 B1 DF 34 84 C5 6C>)
+##END=
+
+$$ hash MD5
+$$ F7 0E 67 84 CF 4E 73 72 E5 23 71 DE 58 80 BE 7C

@@ -1,0 +1,275 @@
+# 1 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d"
+;noesygppr1d
+;avance-version (06/11/09)
+;1D version of noesyprtp
+;with presaturation during relaxation delay and mixing time
+;   and spoil gradient
+;
+;$CLASS=HighRes
+;$DIM=1D
+;$TYPE=
+;$SUBTYPE=
+;$COMMENT=
+
+
+;$OWNER=Bruker
+# 1 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/Avance.incl" 1
+;Avance3.incl
+;   for AVi
+;
+;avance-version (07/01/22)
+;
+;$CLASS=HighRes Incl
+;$COMMENT=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;$Id: Avance3.incl,v 1.3.4.2 2007/01/22 13:38:52 ber Exp $
+# 15 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d" 2
+
+# 1 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/Grad.incl" 1
+;Grad2.incl  -  include file for Gradient Spectroscopy
+;   for 1
+;
+;avance-version (07/01/17)
+;
+;$CLASS=HighRes Incl
+;$COMMENT=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+define list<gradient> EA=<EA>
+
+
+
+;$Id: Grad2.incl,v 1.8.2.4 2007/01/22 14:23:51 ber Exp $
+# 16 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d" 2
+
+
+
+"d12=20u"
+
+
+"acqt0=-p0*2/3.1416"
+
+
+# 1 "mc_line 25 file C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d expanding definition part of mc command before ze"
+define delay MCWRK
+define delay MCREST
+"MCWRK = 0.500000*30m"
+"MCREST = 30m - 30m"
+    dccorr
+# 25 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d"
+1 ze
+# 1 "mc_line 25 file C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d expanding definition of mc command after ze"
+# 26 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d"
+# 1 "mc_line 26 file C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d expanding start label for mc command"
+2 MCWRK  * 2
+LBLF0, MCREST
+# 27 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d"
+  d12 pl9:f1
+  d1 cw:f1 ph29
+  4u do:f1
+  50u setnmr3|0 setnmr0|34|32|33 ctrlgrad 0
+  p16:gp1
+  d16 pl1:f1
+  p1 ph1
+  4u
+  p1 ph2
+  d12 pl9:f1
+  d8 cw:f1
+  4u do:f1
+  p16:gp2
+  d16 pl1:f1
+  4u setnmr3^0 setnmr0^34^32^33 ctrlgrad 7
+  p0 ph3
+  go=2 ph31
+# 1 "mc_line 44 file C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d expanding mc command in line"
+  MCWRK wr #0
+  MCWRK zd 
+  lo to LBLF0 times td0
+
+# 45 "C:/Bruker/TOPSPIN/exp/stan/nmr/lists/pp/noesygppr1d"
+exit
+
+
+ph1=0 2 
+ph2=0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 2
+ph3=0 0 2 2 1 1 3 3
+ph29=0
+ph31=0 2 2 0 1 3 3 1 2 0 0 2 3 1 1 3
+
+
+;pl1 : f1 channel - power level for pulse (default)
+;pl9 : f1 channel - power level for presaturation
+;p0 : for any flip angle
+;p1 : f1 channel -  90 degree high power pulse
+;p16: homospoil/gradient pulse
+;d1 : relaxation delay; 1-5 * T1
+;d8 : mixing time
+;d12: delay for power switching                      [20 usec]
+;d16: delay for homospoil/gradient recovery
+;NS: 8 * n, total number of scans: NS * TD0
+;DS: 4
+
+
+;use gradient ratio:    gp 1 : gp 2
+;                         50 :  -10
+
+;for z-only gradients:
+;gpz1: 50%
+;gpz2: -10%
+
+;use gradient files:
+;gpnam1: SINE.100
+;gpnam2: SINE.100
+
+
+
+;$Id: noesygppr1d,v 1.3.2.1 2006/11/10 11:02:26 ber Exp $

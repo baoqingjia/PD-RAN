@@ -1,0 +1,17 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 6	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= haofuhua
+$$ 2009-03-14 14:50:00.140 +0100  haofuhua@EP-ZH099806
+$$ D:\haofuhua/data/haofuhua/nmr/leihehua__qct_rat_Urine_090313/11/pdata/1/outd
+$$ process C:\Bruker\TOPSPIN\prog\au\bin\hwcal.exe
+##$CURPLOT= <PDF Complete>
+##$CURPRIN= <$PDF Complete>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1D_H.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 1
+##END=

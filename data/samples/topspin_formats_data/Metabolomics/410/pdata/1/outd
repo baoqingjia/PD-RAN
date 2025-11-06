@@ -1,0 +1,17 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 5	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= haofuhua
+$$ 2013-01-31 16:47:02.843 +0800  leihehua@LEIHH
+$$ D:/data/QCTacute_Rat/nmr/Urine_TSP/410/pdata/1/outd
+$$ process D:\Bruker\TOPSPIN\prog\mod\xwinplot.mod.exe
+##$CURPLOT= <PDF Complete>
+##$CURPRIN= <$PDF Complete>
+##$DFORMAT= <normdp>
+##$LAYOUT= <+/1d_h_20130131.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 1
+##END=

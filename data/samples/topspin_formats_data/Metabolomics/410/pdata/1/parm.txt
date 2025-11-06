@@ -1,0 +1,5 @@
+
+Current Data Parameters
+NAME          Urine_TSP                
+EXPNO               410                
+PROCNO                1                

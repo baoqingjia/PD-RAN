@@ -186,7 +186,7 @@ class AttentionModule_stage3_cifar(nn.Module):
         x = self.first_residual_blocks(x)
         out_trunk = self.trunk_branches(x)
         out_middle_2r_blocks = self.middle_2r_blocks(x)
-        
+        #
         out_conv1_1_blocks = self.conv1_1_blocks(out_middle_2r_blocks)
         out = (1 + out_conv1_1_blocks) * out_trunk
         out_last = self.last_blocks(out)
@@ -198,15 +198,17 @@ class PDRAN(nn.Module):
     """PD-RAN: Phase-Driven Residual Attention Network
     
     Input: Complex NMR spectrum (2, 256, 256)
-    Output: Phase parameters [ph0, ph1] (2,)
+    Output: [cosφ0, sinφ0, cosφ1, sinφ1] (4,)
     """
     def __init__(self):
         super(PDRAN, self).__init__()
+        # Stem: 2→32 channels
         self.conv1 = nn.Sequential(
             nn.Conv2d(2, 32, kernel_size=3, stride=1, padding=1, bias=False),
             nn.BatchNorm2d(32),
             nn.ELU(inplace=True)
         )
+        # Stacked residual + attention hierarchy with increasing channels/stride
         self.residual_block1 = ResidualBlock(32, 128)
         self.attention_module1 = AttentionModule_stage1_cifar(128, 128, size1=(256, 256), size2=(128, 128))
         self.residual_block2 = ResidualBlock(128, 256, 4)
@@ -219,12 +221,13 @@ class PDRAN(nn.Module):
         self.residual_block4 = ResidualBlock(512, 1024)
         self.residual_block5 = ResidualBlock(1024, 1024)
         self.residual_block6 = ResidualBlock(1024, 1024)
+        # Global average pooling to 1×1 followed by FC → 4 outputs
         self.mpool2 = nn.Sequential(
             nn.BatchNorm2d(1024),
             nn.ELU(inplace=True),
             nn.AvgPool2d(kernel_size=8)
         )
-        self.fc = nn.Linear(1024,2)
+        self.fc = nn.Linear(1024,4) # [cosφ0, sinφ0, cosφ1, sinφ1]
 
     def forward(self, x, debug=False):
         out = self.conv1(x)

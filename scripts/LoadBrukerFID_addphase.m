@@ -40,7 +40,7 @@ DECIM = ReadTopspinParam(fidPath, 'DECIM');
 DSPFVS = ReadTopspinParam(fidPath, 'DSPFVS');
 DIGMOD = ReadTopspinParam(fidPath, 'DIGMOD');
 GRPDLY = ReadTopspinParam(fidPath, 'GRPDLY');
-NrPointsToShift = DetermineBrukerDigitalFilter(DECIM, DSPFVS, DIGMOD,GRPDLY);
+NrPointsToShift = DetermineBrukerDigitalFilter_Mod(DECIM, DSPFVS, DIGMOD,GRPDLY);
 ShiftNum =  round( NrPointsToShift );
 ShiftResidual= NrPointsToShift-ShiftNum;
 

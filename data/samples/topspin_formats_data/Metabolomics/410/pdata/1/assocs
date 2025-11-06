@@ -1,0 +1,11 @@
+##TITLE= Parameter file, TOPSPIN		Version 2.0
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##NPOINTS= 1	$$ modification sequence number
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= leihh
+$$ 2009-07-09 17:26:27.812 +0800  leihh@LEIHH
+$$ D:/data/QCT_Rat_Acute/nmr/leihehua__qct_rat_Urine_090313/208/pdata/1/assocs
+$$ process C:\Bruker\TOPSPIN\prog\mod\dataserver.exe
+##$MULTDISP= <D:/data/QCT_Rat_Acute/nmr/leihehua__qct_rat_Urine_090313/207/pdata/1>
+##END=

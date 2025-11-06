@@ -19,20 +19,14 @@ The project folder structure is as follows:
 ```
 PD-RAN-main/
 ├── checkpoint/          # Pre-trained models for users to directly check model performance
-│   ├── simu             # Models trained on simulated data
 │   ├── vivo             # Models trained on real experimental data
 ├── data/                # Model input data directory
-│   ├── simu/            # Simulated data for train and test
 │   └── vivo/            # Real experimental metabolic data for train and test
 │   └── samples/         # TopSpin format raw data for demonstrating format conversion 
 ├── log/                 # Training and testing log files
 │   ├── train/           # Training logs
 │   └── test/            # Testing logs
 ├── results/             # Model testing results
-│   ├── simu/            # Simulated data test results
-│   │   ├── predicted_phase/ # Predicted phase parameters
-│   │   ├── corrected_real_part/       # Corrected spectral real part data
-│   │   └── plot_spectra/    # Visualization results
 │   └── vivo/            # Real experimental data test results
 │       └── data_ori/    # Original data directory
 │           ├── predicted_phase/ # Predicted phase parameters

@@ -9,8 +9,8 @@ function phase2pdata()
 % Output: Updated Bruker data files with corrected phase parameters
 
 % Set input and output directories
-SampleDataDir='F:\cg\project\PD-RAN-main\data\samples\topspin_formats_data\RatplasmaCPMG';
-PredictedPhaseDir = 'F:\cg\project\PD-RAN-main\results\vivo\data_ori\predicted_phase';
+SampleDataDir='F:\cg\download\PD-RAN-main\data\samples\topspin_formats_data\Metabolomics';
+PredictedPhaseDir = 'F:\cg\download\PD-RAN-main\results\vivo\data_ori\predicted_phase';
 
 % Get all phase correction files
 phaseFiles = dir(fullfile(PredictedPhaseDir, '*.txt'));
@@ -45,14 +45,13 @@ for i = 1:length(phaseFiles)
     % Update parameter files
     procNode = fullfile(samplePath, 'pdata', '1');
     
-
     % Update proc file
     samplePath1 = [samplePath,'/fid'];
     DECIM = ReadTopspinParam(samplePath1, 'DECIM');
     DSPFVS = ReadTopspinParam(samplePath1, 'DSPFVS');
     DIGMOD = ReadTopspinParam(samplePath1, 'DIGMOD');
     GRPDLY = ReadTopspinParam(samplePath1, 'GRPDLY');
-    NrPointsToShift = DetermineBrukerDigitalFilter(DECIM, DSPFVS, DIGMOD,GRPDLY);
+    NrPointsToShift = DetermineBrukerDigitalFilter_Mod(DECIM, DSPFVS, DIGMOD,GRPDLY);
     ShiftNum =  round( NrPointsToShift );
     ShiftResidual= NrPointsToShift-ShiftNum;
 
